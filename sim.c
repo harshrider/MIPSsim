@@ -138,6 +138,18 @@ void process_instruction() {
 					break;
 				}
 				
+				case SRAV: {
+					printf("Shift right arithmetic variable using SRAV \n");
+					uint32_t rs = (instruction >> 21) & 0x1F;
+					uint32_t rt = (instruction >> 16) & 0x1F;
+					uint32_t rd = (instruction >> 11) & 0x1F;
+					
+					int32_t value = (int32_t)CURRENT_STATE.REGS[rt];
+					uint32_t shift_amount = CURRENT_STATE.REGS[rs] & 0x1F;
+					NEXT_STATE.REGS[rd] = value >> shift_amount;
+					break;
+				}
+				
 				case SRL: {
 					printf("using SRL  \n");
 					uint32_t rt = (instruction >> 16) & 0x1F;
