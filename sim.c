@@ -258,7 +258,28 @@ void process_instruction() {
 						NEXT_STATE.HI = CURRENT_STATE.REGS[rs] % CURRENT_STATE.REGS[rt];
 					}
 					break;
+				}	
+				case DIVU: {
+					printf("Dividing unsigned using DIVU \n");
+					uint32_t rs = (instruction >> 21) & 0x1F;
+					uint32_t rt = (instruction >> 16) & 0x1F;
+					
+					if (CURRENT_STATE.REGS[rt] != 0) {
+						uint32_t dividend = CURRENT_STATE.REGS[rs];
+						uint32_t divisor = CURRENT_STATE.REGS[rt];
+						NEXT_STATE.LO = dividend / divisor;
+						NEXT_STATE.HI = dividend % divisor;
+						printf("DIVU: %u / %u = %u remainder %u\n", dividend, divisor, dividend / divisor, dividend % divisor);
+					} else {
+						printf("Warning: Division by zero in DIVU\n");
+						// MIPS behavior for unsigned division by zero
+						// Common behavior: LO = 0xFFFFFFFF, HI = rs (dividend)
+						NEXT_STATE.LO = 0xFFFFFFFF;
+						NEXT_STATE.HI = CURRENT_STATE.REGS[rs];
+					}
+					break;
 				}
+
 				
 				case OR: {
 					printf("Performing bitwise OR \n");
