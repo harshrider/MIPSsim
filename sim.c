@@ -234,12 +234,17 @@ void process_instruction() {
 				}
 				
 				case DIV: {
-					printf("Dividing using DIV \n");
 					uint32_t rs = (instruction >> 21) & 0x1F;
 					uint32_t rt = (instruction >> 16) & 0x1F;
 					if (CURRENT_STATE.REGS[rt] != 0) {
-						NEXT_STATE.LO = CURRENT_STATE.REGS[rs] / CURRENT_STATE.REGS[rt];
-						NEXT_STATE.HI = CURRENT_STATE.REGS[rs] % CURRENT_STATE.REGS[rt];
+						NEXT_STATE.LO = (int32_t)CURRENT_STATE.REGS[rs] / (int32_t)CURRENT_STATE.REGS[rt];
+						NEXT_STATE.HI = (int32_t)CURRENT_STATE.REGS[rs] % (int32_t)CURRENT_STATE.REGS[rt];
+					} else {
+						// MIPS undefined behavior - could set specific values or trigger exception
+						printf("Warning: Division by zero\n");
+						// E.G.
+						// NEXT_STATE.LO = 0xFFFFFFFF or 0x00000001;
+						// NEXT_STATE.HI = dividend;
 					}
 					break;
 				}
